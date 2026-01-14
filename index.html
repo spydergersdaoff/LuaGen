@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LUAGEN | CORE INTERFACE v4.0.2-STABLE</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500&family=Inter:wght@100;400;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --primary-glow: rgba(0, 242, 255, 0.4);
+            --secondary: #7000ff;
+            --danger: #ff0055;
+            --bg-ultra-dark: #020203;
+            --card-bg: rgba(10, 10, 15, 0.9);
+            --border-glow: 1px solid rgba(0, 242, 255, 0.15);
+        }
+
+        * { cursor: crosshair !important; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-ultra-dark);
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
+        
+        .scanline {
+            position: fixed; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.1; z-index: 100; animation: scanline 8s linear infinite;
+        }
+
+        .cyber-card {
+            background: var(--card-bg);
+            border: var(--border-glow);
+            backdrop-filter: blur(25px);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .cyber-card:hover {
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            transform: scale(1.005);
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .neon-border { border: 1px solid var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+
+        .corner-decoration {
+            position: absolute; width: 10px; height: 10px; border: 2px solid var(--primary);
+        }
+
+        #particle-canvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+            transition: 0.3s;
+        }
+        .glass-input:focus {
+            background: rgba(0, 242, 255, 0.05);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanline"></div>
+
+    <nav class="sticky top-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-xl p-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 neon-border rounded-lg flex items-center justify-center bg-black">
+                    <span class="material-icons text-white animate-pulse">terminal</span>
+                </div>
+                <div>
+                    <h1 class="orbitron text-xl font-black tracking-widest text-white">LUAGEN <span class="text-[10px] text-cyan-400">.vercel.app</span></h1>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+                        <span class="text-[8px] mono text-zinc-500 uppercase tracking-tighter">Status: Encryption Active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex gap-8 mono text-[10px] tracking-widest uppercase">
+                <a href="#" class="text-cyan-400 hover:text-white transition-all">MAIN</a>
+                <a href="https://discord.gg/WWRezGU5Ns" class="text-zinc-500 hover:text-cyan-400 transition-all">SUPPORT</a>
+                <a href="https://www.steamtools.net" target="_blank" class="px-4 py-2 border border-cyan-500/20 rounded hover:bg-cyan-500 hover:text-black transition-all">Lien SteamTools</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 mt-10">
+        
+        <div class="lg:col-span-8 space-y-8">
+            <section class="cyber-card rounded-3xl p-10 overflow-hidden relative">
+                <div class="corner-decoration top-0 left-0 border-r-0 border-b-0"></div>
+                <div class="corner-decoration top-0 right-0 border-l-0 border-b-0"></div>
+                <div class="corner-decoration bottom-0 left-0 border-r-0 border-t-0"></div>
+                <div class="corner-decoration bottom-0 right-0 border-l-0 border-t-0"></div>
+
+                <div class="mb-10">
+                    <h2 class="orbitron text-3xl font-black mb-2 text-white">INJECTEUR DE DONNÉES</h2>
+                    <p class="text-zinc-500 mono text-xs uppercase tracking-widest">Entrez l'ID de l'application Steam pour générer le manifest Lua</p>
+                </div>
+
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                    <div class="relative flex flex-col md:flex-row gap-4">
+                        <div class="relative flex-grow">
+                            <span class="material-icons absolute left-6 top-1/2 -translate-y-1/2 text-cyan-500/50">search</span>
+                            <input id="gameId" type="text" placeholder="ID NUMÉRIQUE (EX: 730)..." class="w-full glass-input rounded-2xl py-6 pl-16 pr-8 text-xl orbitron tracking-widest outline-none shadow-2xl" />
+                        </div>
+                        <button id="searchBtn" class="bg-white hover:bg-cyan-400 text-black px-12 py-6 rounded-2xl orbitron font-black text-sm tracking-widest transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center justify-center gap-3">
+                            VÉRIFIER <span class="material-icons">radar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center md:text-left">
+    <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest">
+        Trouvez l'ID de votre jeu sur 
+        <a href="https://steamdb.info" target="_blank" class="text-cyan-400 hover:text-white underline transition-all">steamdb.info</a>
+    </p>
+</div>
+
+<div class="mt-8 mb-4 text-center">
+    <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mb-2">
+        Un fichier manque ou vous avez besoin d'aide ?
+    </p>
+    <a href="https://discord.gg/WWRezGU5Ns" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-cyan-500/20 rounded-lg bg-cyan-500/5 hover:bg-cyan-500 hover:text-black transition-all group">
+        <span class="orbitron text-[10px] font-bold tracking-widest">SUPPORT DISCORD</span>
+        <span class="material-icons text-sm group-hover:text-black">forum</span>
+    </a>
+</div>
+
+                <div id="progressArea" class="mt-12 opacity-0 transition-opacity duration-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <span id="loadStatus" class="mono text-[10px] text-cyan-500 uppercase tracking-widest">Scanning local storage...</span>
+                        <span id="loadPercent" class="orbitron text-sm text-white">0%</span>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div id="mainProgress" class="h-full bg-cyan-400 w-0 transition-all duration-300 shadow-[0_0_15px_#00f2ff]"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-cyan-500">
+                    <h3 class="orbitron text-sm font-bold text-white mb-6 flex items-center gap-2">
+                        <span class="material-icons text-cyan-400">download_for_offline</span> PHASE 01 : RÉCUPÉRATION
+                    </h3>
+                    <div class="space-y-4 text-xs text-zinc-400 leading-relaxed">
+                        <p class="flex gap-3"><span class="text-cyan-400 font-bold">A.</span> Une fois le fichier .ZIP généré, enregistrez-le dans un répertoire accessible.</p>
+                        <p class="flex gap-3"><span class="text-cyan-400 font-bold">B.</span> Utilisez un logiciel d'extraction (7-Zip ou WinRAR recommandé) pour décompresser l'archive.</p>
+                        <p class="flex gap-3"><span class="text-cyan-400 font-bold">C.</span> Assurez-vous que tous les fichiers .lua sont présents dans le dossier racine.</p>
+                    </div>
+                </div>
+
+                <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-purple-500">
+                    <h3 class="orbitron text-sm font-bold text-white mb-6 flex items-center gap-2">
+                        <span class="material-icons text-purple-400">settings_applications</span> PHASE 02 : DÉPLOIEMENT
+                    </h3>
+                    <div class="space-y-4 text-xs text-zinc-400 leading-relaxed">
+                        <p class="flex gap-3"><span class="text-purple-400 font-bold">A.</span> Téléchargez l'utilitaire requis sur <a href="https://www.steamtools.net" target="_blank" class="text-cyan-400 underline">steamtools.net</a>.</p>
+                        <p class="flex gap-3"><span class="text-purple-400 font-bold">B.</span> Lancez SteamTools et importez les fichiers extraits par simple glisser-déposer.</p>
+                        <p class="flex gap-3"><span class="text-purple-400 font-bold">C.</span> Fermez totalement Steam via le gestionnaire de tâches et relancez-le.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="bg-red-500/5 border border-red-500/20 rounded-2xl p-6 flex items-start gap-4">
+                <span class="material-icons text-red-500">gpp_maybe</span>
+                <p class="text-[11px] text-zinc-500 leading-loose italic">
+                    <strong class="text-red-400 uppercase not-italic">Avertissement de sécurité :</strong> L'utilisation de scripts tiers peut altérer le comportement normal de vos applications. Veuillez toujours effectuer une sauvegarde de vos fichiers de configuration originaux avant toute manipulation. Luagen ne pourra être tenu responsable des pertes de données.
+                </p>
+            </div>
+        </div>
+
+        <div class="lg:col-span-4 space-y-8">
+            <div class="cyber-card rounded-3xl h-[450px] flex flex-col overflow-hidden">
+                <div class="bg-white/5 p-4 flex items-center justify-between border-b border-white/5">
+                    <span class="orbitron text-[10px] tracking-[0.3em] text-cyan-400 uppercase">System_Logs_Terminal</span>
+                </div>
+                <div id="consoleBody" class="flex-grow p-6 mono text-[10px] overflow-y-auto space-y-2 custom-scroll">
+                    <p class="text-zinc-600"> LUAGEN KERNEL INITIALIZED </p>
+                </div>
+            </div>
+
+            <div id="downloadCard" class="opacity-30 pointer-events-none transition-all duration-700">
+                <div class="cyber-card rounded-3xl p-8 bg-gradient-to-br from-cyan-500/10 to-transparent border-cyan-500/30">
+                    <div class="text-center">
+                        <div class="w-20 h-20 rounded-full bg-cyan-500/20 mx-auto flex items-center justify-center mb-6">
+                            <span id="resultIcon" class="material-icons text-4xl text-cyan-400">inventory_2</span>
+                        </div>
+                        <h4 id="resultTitle" class="orbitron text-lg font-bold mb-2">SCAN REQUIS</h4>
+                        <p id="resultDesc" class="text-xs text-zinc-500 mb-8 uppercase tracking-widest">Veuillez entrer une ID valide</p>
+                        
+                        <a id="finalDownloadLink" href="#" class="hidden w-full bg-cyan-500 hover:bg-white text-black py-4 rounded-xl orbitron font-black transition-all flex items-center justify-center gap-2">
+                            <span class="material-icons">cloud_download</span> RÉCUPÉRER L'ARCHIVE
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-10 border-t border-white/5 mt-20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+            <p class="orbitron text-zinc-500 text-[10px] tracking-widest uppercase">Copyright © 2026 Luagen Protocol.</p>
+            <div class="text-[40px] orbitron font-black text-white/5 select-none">LuaGen</div>
+        </div>
+    </footer>
+
+    <script>
+        // --- PARTICULES ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.alpha = Math.random() * 0.5;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() { ctx.fillStyle = `rgba(0, 242, 255, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+        for (let i = 0; i < 150; i++) particles.push(new Particle());
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+        animate();
+
+        // --- CONSOLE ---
+        const consoleBody = document.getElementById('consoleBody');
+        function addLog(text, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const p = document.createElement('p');
+            let color = "text-zinc-500"; let prefix = "> ";
+            if (type === 'error') { color = "text-red-500"; prefix = "[CRITIQUE] "; }
+            if (type === 'success') { color = "text-green-400"; prefix = "[OK] "; }
+            if (type === 'warn') { color = "text-yellow-500"; prefix = "[!] "; }
+            p.className = `log-line ${color}`;
+            p.innerHTML = `<span class="opacity-30 mr-2">${time}</span> ${prefix}${text}`;
+            consoleBody.appendChild(p);
+            consoleBody.scrollTop = consoleBody.scrollHeight;
+        }
+
+        // --- LOGIQUE CORE ---
+        const searchBtn = document.getElementById('searchBtn');
+        const gameIdInput = document.getElementById('gameId');
+        const progressArea = document.getElementById('progressArea');
+        const mainProgress = document.getElementById('mainProgress');
+        const loadPercent = document.getElementById('loadPercent');
+        const downloadCard = document.getElementById('downloadCard');
+        const finalDownloadLink = document.getElementById('finalDownloadLink');
+
+        async function launchExtraction() {
+            const id = gameIdInput.value.trim();
+            if (!/^\d+$/.test(id)) {
+                addLog(`Tentative échouée : ID invalide.`, 'error');
+                return;
+            }
+
+            searchBtn.disabled = true;
+            progressArea.classList.remove('opacity-0');
+            downloadCard.classList.add('opacity-30', 'pointer-events-none');
+            finalDownloadLink.classList.add('hidden');
+            
+            addLog(`Vérification de l'ID Steam : ${id}...`);
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 2;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    completeExtraction(id);
+                }
+                mainProgress.style.width = `${progress}%`;
+                loadPercent.innerText = `${progress}%`;
+            }, 100);
+        }
+
+        async function completeExtraction(id) {
+            const fileUrl = `https://api.luagen.revobd.club/${id}.zip`;
+            try {
+                addLog(`Requête vers le serveur de distribution...`, 'warn');
+                const response = await fetch(fileUrl, { method: 'HEAD' });
+
+                if (response.ok) {
+                    addLog(`Fichier identifié : GAME_${id}.zip`, 'success');
+                    showDownload(fileUrl, id);
+                } else {
+                    addLog(`ID ${id} non trouvé dans la base principale.`, 'error');
+                    addLog(`Accès refusé : Aucun miroir autorisé.`, 'error');
+                    document.getElementById('resultIcon').innerText = 'block';
+                    document.getElementById('resultTitle').innerText = "ÉCHEC SCAN";
+                    document.getElementById('resultDesc').innerText = "ID INTROUVABLE";
+                }
+            } catch (err) {
+                addLog(`Échec de la connexion API.`, 'error');
+            } finally {
+                searchBtn.disabled = false;
+            }
+        }
+
+        function showDownload(url, id) {
+            downloadCard.classList.remove('opacity-30', 'pointer-events-none');
+            document.getElementById('resultIcon').innerText = 'verified';
+            document.getElementById('resultIcon').classList.add('animate-bounce');
+            document.getElementById('resultTitle').innerText = "ARCHIVE PRÊTE";
+            document.getElementById('resultDesc').innerText = `ID: ${id} | SOURCE: OFFICIELLE`;
+            finalDownloadLink.href = url;
+            finalDownloadLink.classList.remove('hidden');
+            addLog(`Interface de téléchargement débloquée.`, 'success');
+        }
+
+        searchBtn.addEventListener('click', launchExtraction);
+        gameIdInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') launchExtraction(); });
+
+        window.onload = () => {
+            setTimeout(() => addLog("Système prêt pour injection Lua."), 500);
+            setTimeout(() => addLog("Protocole SSL/TLS actif."), 800);
+        };
+    </script>
+</body>
+</html>
