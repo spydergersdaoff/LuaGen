@@ -30,7 +30,7 @@
             scroll-behavior: smooth;
         }
 
-        /* --- MODALE MONÉTISATION STYLE PROPRE --- */
+        /* --- STYLE DE LA MODALE AJOUTÉ --- */
         #pubModal {
             display: none;
             position: fixed;
@@ -57,6 +57,7 @@
         ::-webkit-scrollbar-thumb { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
         @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
+        
         .scanline {
             position: fixed; top: 0; left: 0; width: 100%; height: 2px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
@@ -113,11 +114,11 @@
                 Une page va s'ouvrir, tu peux la fermer immédiatement si tu veux. Ce simple clic nous aide à financer Luagen et à te proposer toujours plus de contenus. 😊
             </div>
 
-            <div class="mb-6 opacity-80 border border-white/5 rounded-xl overflow-hidden">
+            <div class="mb-6 border border-white/5 rounded-xl overflow-hidden bg-black/50">
                 <iframe data-aa='2425293' src='//acceptable.a-ads.com/2425293/?size=Adaptive' style='border:0; padding:0; width:100%; height:100px; display:block;'></iframe>
             </div>
 
-            <a id="adLink" href="https://acceptable.a-ads.com/2425293/" target="_blank" class="w-full inline-block bg-white text-black py-4 rounded-xl font-black orbitron uppercase text-xs tracking-widest hover:bg-cyan-400 transition-all shadow-xl">
+            <a id="adLink" href="https://acceptable.a-ads.com/2425293/" target="_blank" class="w-full inline-block bg-white text-black py-4 rounded-xl font-black orbitron uppercase text-xs tracking-widest hover:bg-cyan-400 transition-all">
                 CONTINUER VERS LE TÉLÉCHARGEMENT
             </a>
             <div id="timerStatus" class="mt-6 text-[10px] mono uppercase text-zinc-600 tracking-widest">En attente d'interaction...</div>
@@ -138,6 +139,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="hidden md:flex gap-8 mono text-[10px] tracking-widest uppercase">
                 <a href="#" class="text-cyan-400 hover:text-white transition-all">MAIN</a>
                 <a href="https://discord.gg/WWRezGU5Ns" class="text-zinc-500 hover:text-cyan-400 transition-all">SUPPORT</a>
@@ -174,11 +176,21 @@
                 </div>
 
                 <div class="mt-4 text-center md:text-left">
-                    <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest">
-                        Trouvez l'ID de votre jeu sur 
-                        <a href="https://steamdb.info" target="_blank" class="text-cyan-400 hover:text-white underline transition-all">steamdb.info</a>
-                    </p>
-                </div>
+    <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest">
+        Trouvez l'ID de votre jeu sur 
+        <a href="https://steamdb.info" target="_blank" class="text-cyan-400 hover:text-white underline transition-all">steamdb.info</a>
+    </p>
+</div>
+
+<div class="mt-8 mb-4 text-center">
+    <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mb-2">
+        Un fichier manque ou vous avez besoin d'aide ?
+    </p>
+    <a href="https://discord.gg/WWRezGU5Ns" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-cyan-500/20 rounded-lg bg-cyan-500/5 hover:bg-cyan-500 hover:text-black transition-all group">
+        <span class="orbitron text-[10px] font-bold tracking-widest">SUPPORT DISCORD</span>
+        <span class="material-icons text-sm group-hover:text-black">forum</span>
+    </a>
+</div>
 
                 <div id="progressArea" class="mt-12 opacity-0 transition-opacity duration-500">
                     <div class="flex justify-between items-center mb-4">
@@ -218,7 +230,7 @@
             <div class="bg-red-500/5 border border-red-500/20 rounded-2xl p-6 flex items-start gap-4">
                 <span class="material-icons text-red-500">gpp_maybe</span>
                 <p class="text-[11px] text-zinc-500 leading-loose italic">
-                    <strong class="text-red-400 uppercase not-italic">Avertissement de sécurité :</strong> L'utilisation de scripts tiers peut altérer le comportement normal de vos applications. Luagen ne pourra être tenu responsable des pertes de données.
+                    <strong class="text-red-400 uppercase not-italic">Avertissement de sécurité :</strong> L'utilisation de scripts tiers peut altérer le comportement normal de vos applications. Veuillez toujours effectuer une sauvegarde de vos fichiers de configuration originaux avant toute manipulation. Luagen ne pourra être tenu responsable des pertes de données.
                 </p>
             </div>
         </div>
@@ -228,7 +240,7 @@
                 <div class="bg-white/5 p-4 flex items-center justify-between border-b border-white/5">
                     <span class="orbitron text-[10px] tracking-[0.3em] text-cyan-400 uppercase">System_Logs_Terminal</span>
                 </div>
-                <div id="consoleBody" class="flex-grow p-6 mono text-[10px] overflow-y-auto space-y-2">
+                <div id="consoleBody" class="flex-grow p-6 mono text-[10px] overflow-y-auto space-y-2 custom-scroll">
                     <p class="text-zinc-600"> LUAGEN KERNEL INITIALIZED </p>
                 </div>
             </div>
@@ -239,8 +251,8 @@
                         <div class="w-20 h-20 rounded-full bg-cyan-500/20 mx-auto flex items-center justify-center mb-6">
                             <span id="resultIcon" class="material-icons text-4xl text-cyan-400">inventory_2</span>
                         </div>
-                        <h4 id="resultTitle" class="orbitron text-lg font-bold mb-2 uppercase">SCAN REQUIS</h4>
-                        <p id="resultDesc" class="text-xs text-zinc-500 mb-8 uppercase tracking-widest italic">Veuillez entrer une ID</p>
+                        <h4 id="resultTitle" class="orbitron text-lg font-bold mb-2">SCAN REQUIS</h4>
+                        <p id="resultDesc" class="text-xs text-zinc-500 mb-8 uppercase tracking-widest">Veuillez entrer une ID valide</p>
                         
                         <a id="finalDownloadLink" href="#" class="hidden w-full bg-cyan-500 hover:bg-white text-black py-4 rounded-xl orbitron font-black transition-all flex items-center justify-center gap-2">
                             <span class="material-icons">cloud_download</span> RÉCUPÉRER L'ARCHIVE
@@ -267,109 +279,159 @@
 
             document.addEventListener('contextmenu', e => e.preventDefault());
 
-            // --- PARTICULES ORIGINALE ---
+            // URL API Chiffrée
+            const _0xS1 = "aHR0cHM6Ly9hcGkubHVhZ2VuLnJldm9iZC5jbHViLw==";
+            const _0xS2 = (s) => atob(s);
+
+            // --- PARTICULES ---
             const canvas = document.getElementById('particle-canvas');
             const ctx = canvas.getContext('2d');
             let particles = [];
             function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
             window.addEventListener('resize', resize);
             resize();
+
             class Particle {
                 constructor() { this.reset(); }
-                reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2; this.speedX = (Math.random() - 0.5) * 0.5; this.speedY = (Math.random() - 0.5) * 0.5; this.alpha = Math.random() * 0.5; }
-                update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                    this.alpha = Math.random() * 0.5;
+                }
+                update() {
+                    this.x += this.speedX; this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+                }
                 draw() { ctx.fillStyle = `rgba(0, 242, 255, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
             }
             for (let i = 0; i < 150; i++) particles.push(new Particle());
             function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
             animate();
 
-            // --- CONSOLE ORIGINALE ---
+            // --- CONSOLE ---
+            const consoleBody = document.getElementById('consoleBody');
             function _log(text, type = 'info') {
                 const time = new Date().toLocaleTimeString();
                 const p = document.createElement('p');
-                let color = "text-zinc-500";
-                if (type === 'error') color = "text-red-500";
-                if (type === 'success') color = "text-green-400";
-                if (type === 'warn') color = "text-yellow-500";
+                let color = "text-zinc-500"; let prefix = "> ";
+                if (type === 'error') { color = "text-red-500"; prefix = "[CRITIQUE] "; }
+                if (type === 'success') { color = "text-green-400"; prefix = "[OK] "; }
+                if (type === 'warn') { color = "text-yellow-500"; prefix = "[!] "; }
                 p.className = `log-line ${color}`;
-                p.innerHTML = `<span class="opacity-30 mr-2">${time}</span> > ${text}`;
-                document.getElementById('consoleBody').appendChild(p);
-                document.getElementById('consoleBody').scrollTop = document.getElementById('consoleBody').scrollHeight;
+                p.innerHTML = `<span class="opacity-30 mr-2">${time}</span> ${prefix}${text}`;
+                consoleBody.appendChild(p);
+                consoleBody.scrollTop = consoleBody.scrollHeight;
             }
 
-            // --- LOGIQUE DE VÉRIFICATION (3 SECONDES DEHORS) ---
+            // --- SYSTÈME DE VÉRIFICATION DE LA PUB (3 SECONDES) ---
             function startTracking() {
                 if(timerInterval) return;
-                _log("Lancement du protocole de financement...", "warn");
+                _log("Initialisation du lien publicitaire...", "warn");
                 timerInterval = setInterval(() => {
+                    // Si l'utilisateur a cliqué et n'est plus sur la page (il est sur la pub)
                     if (document.visibilityState === 'hidden') {
                         spentTime++;
                         document.getElementById('timerStatus').innerText = `VÉRIFICATION : ${spentTime}/3s...`;
                         if (spentTime >= 3) {
                             clearInterval(timerInterval);
                             canFinish = true;
-                            document.getElementById('timerStatus').innerText = "VÉRIFICATION TERMINÉE ! REVIENS SUR LA PAGE.";
-                            document.getElementById('timerStatus').classList.replace('text-zinc-600', 'text-green-400');
+                            document.getElementById('timerStatus').innerText = "VÉRIFICATION TERMINÉE ! REVIENS ICI.";
+                            document.getElementById('timerStatus').classList.add('text-green-400');
                         }
                     }
                 }, 1000);
             }
 
+            // Quand l'utilisateur revient sur Luagen après avoir attendu 3s sur la pub
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible' && canFinish) {
                     setTimeout(() => {
                         document.getElementById('pubModal').style.display = 'none';
-                        _log("Vérification Luagen : OK.", "success");
+                        _log("Vérification publicitaire validée.", "success");
                     }, 500);
                 }
             });
 
             document.getElementById('adLink').addEventListener('click', startTracking);
 
-            // --- CORE SCAN LOGIC ---
+            // --- CORE LOGIQUE ---
             const sB = document.getElementById('searchBtn');
             const gI = document.getElementById('gameId');
+            const pA = document.getElementById('progressArea');
+            const mP = document.getElementById('mainProgress');
+            const lP = document.getElementById('loadPercent');
+            const dC = document.getElementById('downloadCard');
+            const fL = document.getElementById('finalDownloadLink');
 
-            async function startScan() {
+            async function _0x2b() {
                 const val = gI.value.trim();
-                if (!/^\d+$/.test(val)) return _log("Échec : ID invalide.", "error");
-
+                if (!/^\d+$/.test(val)) {
+                    _log(`Échec : ID invalide.`, 'error');
+                    return;
+                }
                 sB.disabled = true;
-                document.getElementById('progressArea').classList.remove('opacity-0');
+                pA.classList.remove('opacity-0');
                 _log(`Analyse Steam ID : ${val}...`);
 
                 const itv = setInterval(() => {
+                    // Si on arrive à 75% et que la pub n'est pas faite, on affiche la modale
                     if (progress >= 75 && !canFinish) {
                         document.getElementById('pubModal').style.display = 'flex';
                         return;
                     }
+
                     progress += Math.floor(Math.random() * 8) + 2;
                     if (progress >= 100) {
                         progress = 100;
                         clearInterval(itv);
-                        finishProcess(val);
+                        _0x4f(val);
                     }
-                    document.getElementById('mainProgress').style.width = `${progress}%`;
-                    document.getElementById('loadPercent').innerText = `${progress}%`;
+                    mP.style.width = `${progress}%`;
+                    lP.innerText = `${progress}%`;
                 }, 100);
             }
 
-            async function finishProcess(id) {
-                const url = `https://api.luagen.revobd.club/${id}.zip`;
-                _log(`Fichier identifié : GAME_${id}`, "success");
-                document.getElementById('downloadCard').classList.remove('opacity-30', 'pointer-events-none');
-                const fl = document.getElementById('finalDownloadLink');
-                fl.href = url;
-                fl.classList.remove('hidden');
+            async function _0x4f(id) {
+                const _u = _0xS2(_0xS1) + id + ".zip";
+                try {
+                    _log(`Requête vers le serveur...`, 'warn');
+                    const response = await fetch(_u, { method: 'HEAD' });
+                    if (response.ok) {
+                        _log(`Fichier identifié : GAME_${id}`, 'success');
+                        _0x9e(_u, id);
+                    } else {
+                        _log(`ID ${id} non répertorié.`, 'error');
+                        document.getElementById('resultIcon').innerText = 'block';
+                        document.getElementById('resultTitle').innerText = "ÉCHEC";
+                        document.getElementById('resultDesc').innerText = "ID INTROUVABLE";
+                    }
+                } catch (err) {
+                    _log(`Erreur de liaison API.`, 'error');
+                } finally {
+                    sB.disabled = false;
+                }
+            }
+
+            function _0x9e(url, id) {
+                dC.classList.remove('opacity-30', 'pointer-events-none');
                 document.getElementById('resultIcon').innerText = 'verified';
                 document.getElementById('resultTitle').innerText = "ARCHIVE PRÊTE";
                 document.getElementById('resultDesc').innerText = `ID: ${id} | SOURCE: VERIFIED`;
-                sB.disabled = false;
+                fL.href = url;
+                fL.classList.remove('hidden');
+                _log(`Accès autorisé. Téléchargement actif.`, 'success');
             }
 
-            sB.addEventListener('click', startScan);
-            window.onload = () => { _log("Kernel Luagen : READY."); };
+            sB.addEventListener('click', _0x2b);
+            gI.addEventListener('keypress', (e) => { if(e.key === 'Enter') _0x2b(); });
+
+            window.onload = () => {
+                setTimeout(() => _log("Kernel Luagen : READY."), 500);
+                setTimeout(() => _log("SSL Encryption : ACTIVE."), 800);
+            };
         })();
     </script>
 </body>
