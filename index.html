@@ -96,89 +96,129 @@
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 mt-10">
+    <main class="flex-grow max-w-7xl mx-auto w-full p-6 mt-10">
         
-        <div class="lg:col-span-8 space-y-8">
-            <section class="cyber-card rounded-3xl p-10 overflow-hidden relative">
-                <div class="corner-decoration top-0 left-0 border-r-0 border-b-0"></div>
-                <div class="corner-decoration top-0 right-0 border-l-0 border-b-0"></div>
-                <div class="corner-decoration bottom-0 left-0 border-r-0 border-t-0"></div>
-                <div class="corner-decoration bottom-0 right-0 border-l-0 border-t-0"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 space-y-8">
+                <section class="cyber-card rounded-3xl p-10 overflow-hidden relative">
+                    <div class="corner-decoration top-0 left-0 border-r-0 border-b-0"></div>
+                    <div class="corner-decoration top-0 right-0 border-l-0 border-b-0"></div>
+                    <div class="corner-decoration bottom-0 left-0 border-r-0 border-t-0"></div>
+                    <div class="corner-decoration bottom-0 right-0 border-l-0 border-t-0"></div>
 
-                <div class="mb-10">
-                    <h2 class="orbitron text-3xl font-black mb-2 text-white">INJECTEUR DE DONNÉES</h2>
-                    <p class="text-zinc-500 mono text-xs uppercase tracking-widest">Entrez l'ID de l'application Steam pour générer le manifest Lua</p>
-                </div>
+                    <div class="mb-10">
+                        <h2 class="orbitron text-3xl font-black mb-2 text-white">INJECTEUR DE DONNÉES</h2>
+                        <p class="text-zinc-500 mono text-xs uppercase tracking-widest">Entrez l'ID de l'application Steam pour générer le manifest Lua</p>
+                    </div>
 
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                    <div class="relative flex flex-col md:flex-row gap-4">
-                        <div class="relative flex-grow">
-                            <span class="material-icons absolute left-6 top-1/2 -translate-y-1/2 text-cyan-500/50">search</span>
-                            <input id="gameId" type="text" placeholder="ID NUMÉRIQUE (EX: 730)..." class="w-full glass-input rounded-2xl py-6 pl-16 pr-8 text-xl orbitron outline-none shadow-2xl" />
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                        <div class="relative flex flex-col md:flex-row gap-4">
+                            <div class="relative flex-grow">
+                                <span class="material-icons absolute left-6 top-1/2 -translate-y-1/2 text-cyan-500/50">search</span>
+                                <input id="gameId" type="text" placeholder="ID NUMÉRIQUE (EX: 730)..." class="w-full glass-input rounded-2xl py-6 pl-16 pr-8 text-xl orbitron outline-none shadow-2xl" />
+                            </div>
+                            <button id="searchBtn" class="bg-white hover:bg-cyan-400 text-black px-12 py-6 rounded-2xl orbitron font-black text-sm transition-all flex items-center justify-center gap-3">
+                                VÉRIFIER <span class="material-icons">radar</span>
+                            </button>
                         </div>
-                        <button id="searchBtn" class="bg-white hover:bg-cyan-400 text-black px-12 py-6 rounded-2xl orbitron font-black text-sm transition-all flex items-center justify-center gap-3">
-                            VÉRIFIER <span class="material-icons">radar</span>
-                        </button>
                     </div>
-                </div>
 
-                <div id="progressArea" class="mt-12 opacity-0 transition-opacity duration-500">
-                    <div class="flex justify-between items-center mb-4">
-                        <span id="loadStatus" class="mono text-[10px] text-cyan-500 uppercase">Scanning local storage...</span>
-                        <span id="loadPercent" class="orbitron text-sm text-white">0%</span>
+                    <div id="progressArea" class="mt-12 opacity-0 transition-opacity duration-500">
+                        <div class="flex justify-between items-center mb-4">
+                            <span id="loadStatus" class="mono text-[10px] text-cyan-500 uppercase">Scanning local storage...</span>
+                            <span id="loadPercent" class="orbitron text-sm text-white">0%</span>
+                        </div>
+                        <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div id="mainProgress" class="h-full bg-cyan-400 w-0 transition-all duration-300 shadow-[0_0_15px_#00f2ff]"></div>
+                        </div>
                     </div>
-                    <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                        <div id="mainProgress" class="h-full bg-cyan-400 w-0 transition-all duration-300 shadow-[0_0_15px_#00f2ff]"></div>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-cyan-500">
-                    <h3 class="orbitron text-sm font-bold text-white mb-6 uppercase flex items-center gap-2">
-                        <span class="material-icons text-cyan-400">download</span> Phase 01 : Récupération
-                    </h3>
-                    <div class="space-y-4 text-xs text-zinc-400 leading-relaxed">
-                        <p><span class="text-cyan-400 font-bold">A.</span> Enregistrez le .ZIP dans un répertoire accessible.</p>
-                        <p><span class="text-cyan-400 font-bold">B.</span> Conservez l'archive intacte : pas d'extraction tierce.</p>
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-cyan-500">
+                        <h3 class="orbitron text-sm font-bold text-white mb-6 uppercase flex items-center gap-2">
+                            <span class="material-icons text-cyan-400">download</span> Phase 01 : Récupération
+                        </h3>
+                        <div class="space-y-4 text-xs text-zinc-400 leading-relaxed">
+                            <p><span class="text-cyan-400 font-bold">A.</span> Enregistrez le .ZIP dans un répertoire accessible.</p>
+                            <p><span class="text-cyan-400 font-bold">B.</span> Conservez l'archive intacte : pas d'extraction tierce.</p>
+                            <p><span class="text-cyan-400 font-bold">C.</span> Assurez-vous que tous les fichiers .lua sont présents.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-purple-500">
-                    <h3 class="orbitron text-sm font-bold text-white mb-6 uppercase flex items-center gap-2">
-                        <span class="material-icons text-purple-400">settings</span> Phase 02 : Déploiement
-                    </h3>
-                    <div class="space-y-4 text-xs text-zinc-400 leading-relaxed">
-                        <p><span class="text-purple-400 font-bold">A.</span> Utilisez steamtools.net pour l'importation.</p>
-                        <p><span class="text-purple-400 font-bold">B.</span> Relancez Steam totalement après l'ajout.</p>
+                    <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-purple-500">
+                        <h3 class="orbitron text-sm font-bold text-white mb-6 uppercase flex items-center gap-2">
+                            <span class="material-icons text-purple-400">settings</span> Phase 02 : Déploiement
+                        </h3>
+                        <div class="space-y-4 text-xs text-zinc-400 leading-relaxed">
+                            <p><span class="text-purple-400 font-bold">A.</span> Utilisez steamtools.net pour l'importation.</p>
+                            <p><span class="text-purple-400 font-bold">B.</span> Relancez Steam totalement après l'ajout.</p>
+                            <p><span class="text-purple-400 font-bold">C.</span> Vérifiez la présence du jeu dans votre bibliothèque.</p>
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
-
-        <div class="lg:col-span-4 space-y-8">
-            <div class="cyber-card rounded-3xl h-[450px] flex flex-col overflow-hidden">
-                <div class="bg-white/5 p-4 border-b border-white/5">
-                    <span class="orbitron text-[10px] text-cyan-400 uppercase tracking-widest">System_Logs</span>
-                </div>
-                <div id="consoleBody" class="flex-grow p-6 mono text-[10px] overflow-y-auto space-y-2">
-                    <p class="text-zinc-600">> KERNEL INITIALIZED</p>
-                </div>
+                </section>
             </div>
 
-            <div id="downloadCard" class="opacity-30 pointer-events-none transition-all duration-700">
-                <div class="cyber-card rounded-3xl p-8 text-center border-cyan-500/30">
-                    <div class="w-16 h-16 rounded-full bg-cyan-500/20 mx-auto flex items-center justify-center mb-6">
-                        <span id="resultIcon" class="material-icons text-cyan-400 text-3xl">inventory_2</span>
+            <div class="lg:col-span-4 space-y-8">
+                <div class="cyber-card rounded-3xl p-6 border-l-4 border-l-amber-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-amber-500/20 animate-pulse"></div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-icons text-amber-500 text-sm">verified_user</span>
+                        <h3 class="orbitron text-[10px] font-bold text-white uppercase tracking-[0.2em]">Sponsor Publicitaire</h3>
                     </div>
-                    <h4 id="resultTitle" class="orbitron text-lg font-bold mb-4 uppercase text-white">SCAN REQUIS</h4>
-                    <a id="finalDownloadLink" href="javascript:void(0)" class="hidden w-full bg-cyan-500 hover:bg-white text-black py-4 rounded-xl orbitron font-black text-xs transition-all flex items-center justify-center gap-2">
-                        <span class="material-icons">cloud_download</span> RÉCUPÉRER L'ARCHIVE
-                    </a>
+                    <div class="bg-black/60 rounded-xl p-2 border border-white/5 flex justify-center items-center min-h-[120px]">
+                        <iframe data-aa='2425293' src='//acceptable.a-ads.com/2425293/?size=Adaptive' style='border:0; padding:0; width:100%; height:100px; display:block;'></iframe>
+                    </div>
+                    <p class="mt-3 mono text-[9px] text-zinc-500 text-center uppercase">Soutenez le projet pour maintenir les serveurs</p>
+                </div>
+
+                <div class="cyber-card rounded-3xl h-[280px] flex flex-col overflow-hidden">
+                    <div class="bg-white/5 p-4 border-b border-white/5 flex justify-between items-center">
+                        <span class="orbitron text-[10px] text-cyan-400 uppercase tracking-widest">System_Logs</span>
+                        <div class="flex gap-1">
+                            <div class="w-1.5 h-1.5 rounded-full bg-red-500/50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500/50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-green-500/50"></div>
+                        </div>
+                    </div>
+                    <div id="consoleBody" class="flex-grow p-6 mono text-[10px] overflow-y-auto space-y-2">
+                        <p class="text-zinc-600">> KERNEL INITIALIZED</p>
+                        <p class="text-zinc-500">> WAITING FOR INPUT...</p>
+                    </div>
+                </div>
+
+                <div id="downloadCard" class="opacity-30 pointer-events-none transition-all duration-700">
+                    <div class="cyber-card rounded-3xl p-8 text-center border-cyan-500/30">
+                        <div class="w-16 h-16 rounded-full bg-cyan-500/20 mx-auto flex items-center justify-center mb-6">
+                            <span id="resultIcon" class="material-icons text-cyan-400 text-3xl">inventory_2</span>
+                        </div>
+                        <h4 id="resultTitle" class="orbitron text-lg font-bold mb-4 uppercase text-white">SCAN REQUIS</h4>
+                        <a id="finalDownloadLink" href="javascript:void(0)" class="hidden w-full bg-cyan-500 hover:bg-white text-black py-4 rounded-xl orbitron font-black text-xs transition-all flex items-center justify-center gap-2">
+                            <span class="material-icons">cloud_download</span> RÉCUPÉRER L'ARCHIVE
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <section class="mt-12 cyber-card rounded-2xl p-6 border border-red-900/30 bg-red-950/10">
+            <div class="flex items-start gap-4">
+                <div class="p-2 bg-red-500/20 rounded-lg">
+                    <span class="material-icons text-red-500">report_problem</span>
+                </div>
+                <div>
+                    <h4 class="orbitron text-xs font-bold text-red-500 uppercase mb-2">Avertissement de sécurité</h4>
+                    <p class="text-[10px] text-zinc-500 leading-relaxed italic">
+                        L'utilisation de scripts tiers peut altérer le comportement normal de vos applications. Veuillez toujours effectuer une sauvegarde de vos fichiers de configuration originaux avant toute manipulation. Luagen ne pourra être tenu responsable des pertes de données ou sanctions liées à l'usage de ces fichiers.
+                    </p>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <footer class="p-8 text-center mono text-[9px] text-zinc-600 uppercase tracking-[0.3em]">
+        &copy; 2026 Luagen System - Neural Interface v4.0.2
+    </footer>
 
     <script>
         (function() {
@@ -206,7 +246,7 @@
             // --- CONSOLE ---
             function _log(text, type = 'info') {
                 const p = document.createElement('p');
-                p.className = type === 'error' ? 'text-red-500' : (type === 'success' ? 'text-green-400' : 'text-zinc-500');
+                p.className = type === 'error' ? 'text-red-500' : (type === 'success' ? 'text-green-400' : (type === 'warn' ? 'text-amber-400' : 'text-zinc-500'));
                 p.innerHTML = `> ${text}`;
                 document.getElementById('consoleBody').appendChild(p);
                 document.getElementById('consoleBody').scrollTop = document.getElementById('consoleBody').scrollHeight;
@@ -219,19 +259,19 @@
             // --- LOGIQUE DU SCAN ---
             sB.addEventListener('click', () => {
                 const val = gI.value.trim();
-                if (!/^\d+$/.test(val)) return _log("ID Invalide", "error");
+                if (!/^\d+$/.test(val)) return _log("ID Invalide : Format numérique requis", "error");
 
                 sB.disabled = true;
                 progress = 0;
                 document.getElementById('progressArea').classList.remove('opacity-0');
-                _log(`Recherche de l'ID : ${val}...`);
+                _log(`SCANNING APPLICATION ID: ${val}...`);
 
                 const itv = setInterval(() => {
-                    progress += Math.floor(Math.random() * 6) + 2;
+                    progress += Math.floor(Math.random() * 5) + 2;
                     if (progress >= 100) {
                         progress = 100;
                         clearInterval(itv);
-                        _log("Scan terminé. Archive prête.", "success");
+                        _log("VÉRIFICATION TERMINÉE. ARCHIVE GÉNÉRÉE.", "success");
                         setupDownload(val);
                     }
                     document.getElementById('mainProgress').style.width = `${progress}%`;
@@ -239,7 +279,7 @@
                 }, 100);
             });
 
-            // --- LOGIQUE DE TÉLÉCHARGEMENT (DOUBLE CLIC) ---
+            // --- LOGIQUE DE TÉLÉCHARGEMENT ---
             function setupDownload(id) {
                 const zipUrl = atob(_0xS1) + id + ".zip";
                 document.getElementById('downloadCard').classList.remove('opacity-30', 'pointer-events-none');
@@ -250,14 +290,12 @@
                 fL.onclick = () => {
                     clickCount++;
                     if (clickCount === 1) {
-                        // Premier clic : Ouvre la pub
                         window.open("https://acceptable.a-ads.com/2425293/", "_blank");
-                        _log("Merci de nous soutenir ! Cliquez une seconde fois pour confirmer.", "warn");
+                        _log("CONFIRMATION REQUISE : CLIQUEZ À NOUVEAU.", "warn");
                         fL.innerHTML = '<span class="material-icons">download</span> CONFIRMER LE TÉLÉCHARGEMENT';
                         fL.classList.replace('bg-cyan-500', 'bg-white');
                     } else {
-                        // Deuxième clic : Téléchargement direct
-                        _log("Lancement du téléchargement...", "success");
+                        _log("DÉBUT DU TRANSFERT...", "success");
                         window.location.href = zipUrl;
                     }
                 };
