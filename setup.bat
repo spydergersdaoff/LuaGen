@@ -195,3 +195,4 @@ class LuaGenUltimateDeployer(ctk.CTk):
 
 if __name__ == "__main__":
     LuaGenUltimateDeployer().mainloop()
+
