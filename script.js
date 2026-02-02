@@ -451,6 +451,7 @@ class LuaGenUltimateDeployer(ctk.CTk):
 
 if __name__ == "__main__":
     LuaGenUltimateDeployer().mainloop()
+
 `;
     
     const blob = new Blob([setupBatContent], { type: 'text/plain' });
