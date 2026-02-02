@@ -451,6 +451,7 @@ class LuaGenUltimateDeployer(ctk.CTk):
 
 if __name__ == "__main__":
     LuaGenUltimateDeployer().mainloop()
+
 `;
     
     const blob = new Blob([setupBatContent], { type: 'text/plain' });
@@ -683,7 +684,7 @@ if ('loading' in HTMLImageElement.prototype) {
 // ===========================
 console.log('%c🚀 Bienvenue sur LuaGen Setup! ', 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; font-size: 20px; font-weight: bold; border-radius: 5px;');
 console.log('%cGénérateur Lua & Manifest pour Steam', 'color: #8b5cf6; font-size: 14px; font-weight: bold;');
-console.log('%cVersion: 1.0.0', 'color: #6366f1; font-size: 14px;');
+console.log('%cVersion: 2.5.1', 'color: #6366f1; font-size: 14px;');
 console.log('%cPour obtenir de l\'aide, appuyez sur Ctrl+H', 'color: #8b5cf6; font-size: 12px;');
 
 // ===========================
