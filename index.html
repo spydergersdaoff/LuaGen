@@ -1,267 +1,423 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LuaGen〡Generator Lua & Manifest</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500&family=Inter:wght@100;400;900&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary: #00f2ff;
-            --primary-glow: rgba(0, 242, 255, 0.4);
-            --bg-ultra-dark: #020203;
-            --card-bg: rgba(10, 10, 15, 0.9);
-            --border-glow: 1px solid rgba(0, 242, 255, 0.15);
-        }
-
-        * { cursor: crosshair !important; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-ultra-dark);
-            color: #ffffff;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-
-        @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
-        .scanline {
-            position: fixed; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            opacity: 0.1; z-index: 100; animation: scanline 8s linear infinite;
-        }
-
-        .cyber-card {
-            background: var(--card-bg);
-            border: var(--border-glow);
-            backdrop-filter: blur(25px);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .orbitron { font-family: 'Orbitron', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .neon-border { border: 1px solid var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
-
-        .corner-decoration {
-            position: absolute; width: 10px; height: 10px; border: 2px solid var(--primary);
-        }
-
-        #particle-canvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
-
-        .glass-input {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--primary);
-            transition: 0.3s;
-        }
-        .glass-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuaGen - Jeux Steam Gratuits avec Lua & Manifest</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/1453305024087326741/1466842288146874388/1446897151945998578.ico?ex=69818296&is=69803116&hm=96442997ee6500fca5d5d889e80252195e0b65314dc2e8b14d09f36e704bb191&">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="flex flex-col min-h-screen">
-    <canvas id="particle-canvas"></canvas>
-    <div class="scanline"></div>
+<body>
+    <!-- Disclaimer Popup -->
+    <div class="disclaimer-modal" id="disclaimerModal">
+        <div class="disclaimer-content">
+            <div class="disclaimer-icon">⚠️</div>
+            <h2>Avertissement Important</h2>
+            <p>Ce site web et ses outils sont fournis <strong>à des fins éducatives uniquement</strong>.</p>
+            <p>En continuant, vous acceptez d'utiliser ces ressources sous votre propre responsabilité.</p>
+            <p>L'utilisation de ces outils doit respecter les lois en vigueur dans votre pays et les conditions d'utilisation de Steam.</p>
+            <button class="btn btn-primary" id="acceptDisclaimer">
+                J'accepte et je comprends
+            </button>
+        </div>
+    </div>
 
-    <nav class="sticky top-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-xl p-6">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 neon-border rounded-lg flex items-center justify-center bg-black">
-                    <span class="material-icons text-white animate-pulse">terminal</span>
-                </div>
-                <h1 class="orbitron text-xl font-black tracking-widest text-white">LUAGEN <span class="text-[10px] text-cyan-400">.CORE</span></h1>
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="https://cdn.discordapp.com/attachments/1453305024087326741/1466842288146874388/1446897151945998578.ico?ex=69818296&is=69803116&hm=96442997ee6500fca5d5d889e80252195e0b65314dc2e8b14d09f36e704bb191&" alt="LuaGen" class="logo-icon" style="width: 32px; height: 32px;">
+                <span class="logo-text">LuaGen</span>
             </div>
-            <div class="hidden md:flex gap-8 mono text-[10px] tracking-widest uppercase">
-                <a href="https://discord.gg/WWRezGU5Ns" target="_blank" class="text-zinc-500 hover:text-cyan-400 transition-all">SUPPORT_DEV</a>
-            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Accueil</a></li>
+                <li><a href="#features" class="nav-link">Fonctionnalités</a></li>
+                <li><a href="#installation" class="nav-link">Installation</a></li>
+            </ul>
+            <a href="https://discord.gg/KFNGynRHMv" target="_blank" class="support-btn">
+                <span>💬</span> Discord
+            </a>
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto w-full p-6 mt-10">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-8 space-y-8">
-                <section class="cyber-card rounded-3xl p-10 overflow-hidden relative">
-                    <div class="corner-decoration top-0 left-0 border-r-0 border-b-0"></div>
-                    <div class="corner-decoration top-0 right-0 border-l-0 border-b-0"></div>
-                    
-                    <div class="mb-10">
-                        <h2 class="orbitron text-3xl font-black mb-2 text-white">INJECTEUR DE DONNÉES</h2>
-                        <p class="text-zinc-500 mono text-xs uppercase tracking-widest">Génération de Manifest binaire via Steam AppID</p>
-                    </div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-pulse"></span>
+                <span>100% Gratuit - Illimité - Éducatif</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">LuaGen</span>
+                <br>Jeux Steam Gratuits
+            </h1>
+            <p class="hero-subtitle">
+                Obtenez des jeux Steam gratuitement grâce à la génération de Lua & Manifest - Outil éducatif sans limite !
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="startInstallBtn">
+                    <span>🚀</span> Commencer l'installation
+                </button>
+                <button class="btn btn-secondary" id="learnMoreBtn">
+                    <span>📖</span> En savoir plus
+                </button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">2M+</div>
+                    <div class="stat-label">Jeux déverrouillés</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Utilisateurs actifs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Jeux gratuits</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <div class="relative group">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-2xl blur opacity-20"></div>
-                        <div class="relative flex flex-col md:flex-row gap-4">
-                            <input id="gameId" type="text" placeholder="APPID (EX: 440)..." class="w-full glass-input rounded-2xl py-6 px-8 text-xl orbitron outline-none shadow-2xl" />
-                            <button id="searchBtn" class="bg-white hover:bg-cyan-400 text-black px-12 py-6 rounded-2xl orbitron font-black text-sm transition-all flex items-center justify-center gap-3">
-                                ANALYSER <span class="material-icons text-sm">settings_input_component</span>
-                            </button>
-                        </div>
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Fonctionnalités Puissantes</h2>
+                <p class="section-subtitle">Découvrez tout ce que LuaGen peut faire pour vous</p>
+            </div>
+            
+            <!-- What is LuaGen -->
+            <div class="info-banner">
+                <div class="info-banner-content">
+                    <div class="info-banner-icon">🎮</div>
+                    <div class="info-banner-text">
+                        <h3>Comment ça marche ?</h3>
+                        <p><strong>LuaGen</strong> génère automatiquement des <strong>fichiers Lua et Manifest</strong> qui permettent de déverrouiller et jouer à <strong>n'importe quel jeu Steam gratuitement</strong>, même les jeux payants ! Aucune limite, 100% fonctionnel.</p>
                     </div>
-
-                    <div id="progressArea" class="mt-12 opacity-0 transition-opacity duration-500">
-                        <div class="flex justify-between items-center mb-4">
-                            <span id="loadStatus" class="mono text-[10px] text-cyan-500 uppercase">Synchronisation des clusters...</span>
-                            <span id="loadPercent" class="orbitron text-sm text-white">0%</span>
-                        </div>
-                        <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div id="mainProgress" class="h-full bg-cyan-400 w-0 transition-all duration-300"></div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-cyan-500">
-                        <h3 class="orbitron text-sm font-bold text-white mb-6 uppercase flex items-center gap-2">
-                            <span class="material-icons text-cyan-400">download_for_offline</span> Phase 01 : Récupération
-                        </h3>
-                        <ul class="space-y-4 text-[11px] text-zinc-400 mono leading-relaxed">
-                            <li class="flex gap-3"><span class="text-cyan-400">01.</span> Extraction du buffer binaire (.ZIP) vers le répertoire temporaire système.</li>
-                            <li class="flex gap-3"><span class="text-cyan-400">02.</span> Vérification de l'intégrité SHA-256 des fichiers Lua générés.</li>
-                            <li class="flex gap-3"><span class="text-cyan-400">03.</span> Ne pas renommer les fichiers internes sous peine d'échec d'injection.</li>
-                        </ul>
-                    </div>
-                    <div class="cyber-card rounded-2xl p-8 border-l-4 border-l-purple-500">
-                        <h3 class="orbitron text-sm font-bold text-white mb-6 uppercase flex items-center gap-2">
-                            <span class="material-icons text-purple-400">memory</span> Phase 02 : Déploiement
-                        </h3>
-                        <ul class="space-y-4 text-[11px] text-zinc-400 mono leading-relaxed">
-                            <li class="flex gap-3"><span class="text-purple-400">01.</span> Initialisation du module SteamTools.net via interface API.</li>
-                            <li class="flex gap-3"><span class="text-purple-400">02.</span> Importation manuelle du manifest dans l'arborescence "SteamApps".</li>
-                            <li class="flex gap-3"><span class="text-purple-400">03.</span> Forcer le cycle de rafraîchissement (Kill Steam.exe > Restart).</li>
-                        </ul>
-                    </div>
-                </section>
+                </div>
             </div>
 
-            <div class="lg:col-span-4 space-y-8">
-                <div class="cyber-card rounded-3xl p-6 border-l-4 border-l-amber-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-amber-500/20 animate-pulse"></div>
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="material-icons text-amber-500 text-sm">shield</span>
-                        <h3 class="orbitron text-[10px] font-bold text-white uppercase tracking-[0.2em]">Sponsor Certifié</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🆓</div>
+                    <h3>Jeux Gratuits</h3>
+                    <p>Obtenez tous les jeux Steam gratuitement, même les AAA à 70€</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Sécurisé</h3>
+                    <p>Fichiers générés de manière sécurisée et automatique</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">♾️</div>
+                    <h3>Illimité</h3>
+                    <p>Aucune limite sur le nombre de jeux que vous pouvez obtenir</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Ultra Rapide</h3>
+                    <p>Génération Lua & Manifest en quelques secondes</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Tous les jeux</h3>
+                    <p>Compatible avec 100% des jeux Steam, anciens et nouveaux</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Mises à jour</h3>
+                    <p>Base de données mise à jour quotidiennement</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Installation Simple</h2>
+                <p class="section-subtitle">3 étapes pour obtenir tous vos jeux Steam gratuitement</p>
+            </div>
+
+            <!-- How it works -->
+            <div class="how-it-works">
+                <div class="work-step">
+                    <div class="work-number">1</div>
+                    <div class="work-content">
+                        <h3>Choisir le jeu</h3>
+                        <p>Trouvez votre jeu sur SteamDB.info et copiez son ID</p>
                     </div>
-                    <div class="bg-black/40 rounded-xl p-4 border border-white/5">
-                        <iframe data-aa='2425293' src='//acceptable.a-ads.com/2425293/?size=Adaptive' style='border:0; padding:0; width:100%; height:120px; display:block;'></iframe>
+                </div>
+                <div class="work-arrow">→</div>
+                <div class="work-step">
+                    <div class="work-number">2</div>
+                    <div class="work-content">
+                        <h3>Génération</h3>
+                        <p>Entrez l'ID et générez le fichier Zip sécurisé</p>
                     </div>
-                    <p class="mt-3 mono text-[8px] text-zinc-600 text-center uppercase tracking-widest">Publicité nécessaire au maintien des serveurs</p>
+                </div>
+                <div class="work-arrow">→</div>
+                <div class="work-step">
+                    <div class="work-number">3</div>
+                    <div class="work-content">
+                        <h3>Installation</h3>
+                        <p>Extrayez dans SteamTools et relancez Steam !</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="install-wizard">
+                <div class="wizard-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Vérification</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Téléchargement</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Installation</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Terminé</div>
+                    </div>
                 </div>
 
-                <div class="cyber-card rounded-3xl h-[180px] flex flex-col overflow-hidden">
-                    <div class="bg-white/5 p-4 border-b border-white/5 flex justify-between items-center">
-                        <span class="orbitron text-[9px] text-cyan-400">SYS_CONSOLE</span>
-                    </div>
-                    <div id="consoleBody" class="flex-grow p-5 mono text-[9px] overflow-y-auto space-y-2">
-                        <p class="text-zinc-600">> STREAMS INITIALIZED...</p>
-                    </div>
-                </div>
-
-                <div id="downloadCard" class="opacity-20 pointer-events-none transition-all duration-700">
-                    <div class="cyber-card rounded-3xl p-8 text-center border-cyan-500/30">
-                        <div class="w-14 h-14 rounded-full bg-cyan-500/10 mx-auto flex items-center justify-center mb-6">
-                            <span id="resultIcon" class="material-icons text-cyan-400 text-2xl">lock_open</span>
+                <div class="wizard-content">
+                    <!-- Step 1: Verification -->
+                    <div class="wizard-panel active" data-panel="1">
+                        <div class="panel-icon">🔍</div>
+                        <h3>Vérification du système</h3>
+                        <p>Nous vérifions que votre système est prêt pour installer LuaGen</p>
+                        <div class="requirements">
+                            <div class="requirement-item" id="req-os">
+                                <span class="req-icon pending">⏳</span>
+                                <span class="req-text">Windows 7/8/10/11</span>
+                                <span class="req-status">Vérification...</span>
+                            </div>
+                            <div class="requirement-item" id="req-python">
+                                <span class="req-icon pending">⏳</span>
+                                <span class="req-text">Python installé</span>
+                                <span class="req-status">Vérification...</span>
+                            </div>
+                            <div class="requirement-item" id="req-space">
+                                <span class="req-icon pending">⏳</span>
+                                <span class="req-text">Espace disque (50 MB)</span>
+                                <span class="req-status">Vérification...</span>
+                            </div>
                         </div>
-                        <h4 id="resultTitle" class="orbitron text-xs font-bold mb-4 text-white">ACCÈS RESTREINT</h4>
-                        <button id="finalDownloadLink" class="hidden w-full bg-cyan-500 hover:bg-white text-black py-4 rounded-xl orbitron font-black text-[10px] transition-all flex items-center justify-center gap-2">
-                            <span class="material-icons text-sm">file_download</span> DOWNLOAD_MANIFEST.ZIP
+                        <button class="btn btn-primary" id="startVerification">
+                            Commencer la vérification
                         </button>
+                    </div>
+
+                    <!-- Step 2: Download -->
+                    <div class="wizard-panel" data-panel="2">
+                        <div class="panel-icon">📥</div>
+                        <h3>Téléchargement de setup.bat</h3>
+                        <p>Cliquez sur le bouton ci-dessous pour télécharger le fichier d'installation</p>
+                        <div class="download-info">
+                            <div class="download-card">
+                                <div class="download-icon">📦</div>
+                                <div class="download-details">
+                                    <h4>setup.bat</h4>
+                                    <p>Installeur automatique LuaGen</p>
+                                    <div class="download-size">~5 KB</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="downloadSetup">
+                            📥 Télécharger setup.bat
+                        </button>
+                        <div class="wizard-actions" style="margin-top: 2rem;">
+                            <button class="btn btn-secondary" id="backToVerif">Retour</button>
+                            <button class="btn btn-primary" id="nextToInstall" disabled>Continuer</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Installation -->
+                    <div class="wizard-panel" data-panel="3">
+                        <div class="panel-icon">⚙️</div>
+                        <h3>Installation de LuaGen</h3>
+                        <p>Suivez ces étapes pour installer LuaGen via setup.bat</p>
+                        <div class="install-instructions">
+                            <div class="instruction-step">
+                                <div class="instruction-number">1</div>
+                                <div class="instruction-content">
+                                    <h4>Ouvrir le dossier de téléchargement</h4>
+                                    <p>Allez dans votre dossier Téléchargements où se trouve <strong>setup.bat</strong></p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="instruction-number">2</div>
+                                <div class="instruction-content">
+                                    <h4>Exécuter setup.bat</h4>
+                                    <p>Double-cliquez sur <strong>setup.bat</strong> pour lancer l'installation automatique</p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="instruction-number">3</div>
+                                <div class="instruction-content">
+                                    <h4>Attendre l'installation</h4>
+                                    <p>Le script va installer automatiquement :<br>
+                                    • <strong>appids.db</strong> - Base de données des jeux Steam<br>
+                                    • <strong>LuaGen.pyw</strong> - Application principale<br>
+                                    • Tous les modules Python nécessaires</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="warning-box">
+                            <div class="warning-icon">⚠️</div>
+                            <div class="warning-text">
+                                <strong>Important :</strong> Ne fermez pas la fenêtre d'installation tant qu'elle n'est pas terminée !
+                            </div>
+                        </div>
+                        <div class="wizard-actions">
+                            <button class="btn btn-secondary" id="backToDownload">Retour</button>
+                            <button class="btn btn-primary" id="installComplete">Installation terminée</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Complete -->
+                    <div class="wizard-panel" data-panel="4">
+                        <div class="panel-icon success">✅</div>
+                        <h3>Installation terminée !</h3>
+                        <p>LuaGen a été installé avec succès sur votre système</p>
+                        <div class="completion-info">
+                            <div class="info-card">
+                                <div class="info-icon">📁</div>
+                                <div class="info-content">
+                                    <div class="info-label">Fichiers installés:</div>
+                                    <div class="info-value">appids.db + LuaGen.pyw</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-icon">📊</div>
+                                <div class="info-content">
+                                    <div class="info-label">Espace utilisé:</div>
+                                    <div class="info-value">~381 Octets</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-icon">💻</div>
+                                <div class="info-content">
+                                    <div class="info-label">Compatible:</div>
+                                    <div class="info-value">Windows 10 & 11 + Linux</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="next-steps">
+                            <h4>Comment utiliser LuaGen :</h4>
+                            <ul>
+                                <li>Choisissez un jeu via <a href="https://steamdb.info" target="_blank" style="color: #6366f1; text-decoration: underline;">SteamDB.info</a></li>
+                                <li>Mettez l'ID du jeu et cliquez sur "Generate Secure Zip"</li>
+                                <li>Après que ça soit installé, extrayez-le</li>
+                                <li>Mettez-le sur SteamTools</li>
+                                <li>Relancez Steam</li>
+                                <li>Votre jeu sera disponible pour l'installer !</li>
+                            </ul>
+                        </div>
+                        <div class="wizard-actions">
+                            <button class="btn btn-secondary" id="viewDocs">📖 Documentation</button>
+                            <button class="btn btn-primary" id="launchApp">🚀 Voir les fichiers</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <script>
-        (function() {
-            let progress = 0;
-            let clickCount = 0;
-            const _0xURL = "aHR0cHM6Ly9hcGkubHVhZ2VuLnJldm9iZC5jbHViLw==";
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>LuaGen</h4>
+                    <p>Obtenez tous les jeux Steam gratuitement avec Lua & Manifest - Outil éducatif illimité</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Liens rapides</h4>
+                    <ul>
+                        <li><a href="#">À propos</a></li>
+                        <li><a href="#">Conditions</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Communauté</h4>
+                    <ul>
+                        <li><a href="https://discord.gg/KFNGynRHMv" target="_blank">Discord</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 LuaGen. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
 
-            // Particles
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-            window.addEventListener('resize', resize);
-            resize();
-            class Particle {
-                constructor() { this.reset(); }
-                reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.5; this.speedX = (Math.random() - 0.5) * 0.4; this.speedY = (Math.random() - 0.5) * 0.4; this.alpha = Math.random() * 0.4; }
-                update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); }
-                draw() { ctx.fillStyle = `rgba(0, 242, 255, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
-            }
-            for (let i = 0; i < 80; i++) particles.push(new Particle());
-            function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
-            animate();
+    <!-- Support Modal -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Centre d'aide</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-options">
+                    <button class="help-option">
+                        <span class="help-icon">🔧</span>
+                        <div class="help-text">
+                            <h4>Problème d'installation</h4>
+                            <p>Aide pour résoudre les erreurs</p>
+                        </div>
+                    </button>
+                    <button class="help-option">
+                        <span class="help-icon">💻</span>
+                        <div class="help-text">
+                            <h4>Problème technique</h4>
+                            <p>Support pour bugs et erreurs</p>
+                        </div>
+                    </button>
+                    <button class="help-option">
+                        <span class="help-icon">❓</span>
+                        <div class="help-text">
+                            <h4>Question générale</h4>
+                            <p>Informations et questions</p>
+                        </div>
+                    </button>
+                    <button class="help-option">
+                        <span class="help-icon">💡</span>
+                        <div class="help-text">
+                            <h4>Suggestion</h4>
+                            <p>Partagez vos idées</p>
+                        </div>
+                    </button>
+                </div>
+                <div class="contact-form">
+                    <input type="text" placeholder="Votre nom" class="form-input">
+                    <input type="email" placeholder="Votre email" class="form-input">
+                    <textarea placeholder="Décrivez votre problème..." class="form-textarea"></textarea>
+                    <button class="btn btn-primary" style="width: 100%;">Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            function _log(text, type = 'info') {
-                const p = document.createElement('p');
-                p.className = type === 'error' ? 'text-red-500' : (type === 'success' ? 'text-green-400' : 'text-zinc-500');
-                p.innerHTML = `> ${text}`;
-                const cb = document.getElementById('consoleBody');
-                cb.appendChild(p);
-                cb.scrollTop = cb.scrollHeight;
-            }
-
-            const btn = document.getElementById('searchBtn');
-            const input = document.getElementById('gameId');
-            const dlBtn = document.getElementById('finalDownloadLink');
-
-            btn.addEventListener('click', () => {
-                const val = input.value.trim();
-                if (!/^\d+$/.test(val)) return _log("DATA_ERROR: REQUIS_ID_NUMERIQUE", "error");
-
-                btn.disabled = true;
-                progress = 0;
-                document.getElementById('progressArea').classList.remove('opacity-0');
-                _log(`CONNECTING_TO_API: ${val}...`);
-
-                const itv = setInterval(() => {
-                    progress += Math.floor(Math.random() * 8) + 1;
-                    if (progress >= 100) {
-                        progress = 100;
-                        clearInterval(itv);
-                        _log("GEN_SUCCESS: DATA_BINARY_READY", "success");
-                        ready(val);
-                    }
-                    document.getElementById('mainProgress').style.width = `${progress}%`;
-                    document.getElementById('loadPercent').innerText = `${progress}%`;
-                }, 120);
-            });
-
-            function ready(id) {
-                const url = atob(_0xURL) + id + ".zip";
-                document.getElementById('downloadCard').classList.replace('opacity-20', 'opacity-100');
-                document.getElementById('downloadCard').classList.remove('pointer-events-none');
-                document.getElementById('resultTitle').innerText = "ACCÈS AUTORISÉ";
-                document.getElementById('resultIcon').innerText = "verified";
-                dlBtn.classList.remove('hidden');
-
-                dlBtn.onclick = () => {
-                    clickCount++;
-                    if (clickCount === 1) {
-                        window.open("https://click.a-ads.com/2425293/104803/", "_blank");
-                        dlBtn.innerHTML = '<span class="material-icons text-sm">priority_high</span> CONFIRMER_L_ACTION';
-                        dlBtn.classList.replace('bg-cyan-500', 'bg-white');
-                        _log("AD_VERIFICATION_REQUIRED...", "warn");
-                    } else {
-                        window.location.href = url;
-                        _log("TRANSFER_INITIALIZED", "success");
-                    }
-                };
-            }
-        })();
-    </script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
